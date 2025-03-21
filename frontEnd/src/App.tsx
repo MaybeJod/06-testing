@@ -79,7 +79,7 @@ function App() {
 							</div>
 						))
 					) : (
-						<p>No animals found. Create one!</p>
+						<p>No animals found. Create one on the button!</p>
 					)}
 
 					{/* {OneAnimal ? (
