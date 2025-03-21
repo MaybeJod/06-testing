@@ -5,6 +5,7 @@ import {
 	createAnimal,
 	updateAnimal,
 	deleteAnimal,
+	getAllAnimalsBySpecies,
 	type Animal,
 } from "./api";
 
@@ -17,13 +18,24 @@ function App() {
 
 	function createNewAnimal() {
 		let animalObject = {
-			species: "squirrel",
-			name: "MOUTH",
-			mood: "MOUTH",
+			species: "hamster",
+			name: "Neo",
+			mood: "simulation",
 		};
 
 		createAnimal(animalObject);
 	}
+
+	useEffect(() => {
+		async function getAllAnimalsBySpecieslol() {
+			let data = await getAllAnimalsBySpecies("cat");
+			if (data) {
+				setAnimals(data);
+			}
+		}
+
+		getAllAnimalsBySpecieslol();
+	});
 
 	function updateExistingAnimal() {
 		let animalObject = {

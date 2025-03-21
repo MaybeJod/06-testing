@@ -25,6 +25,23 @@ export async function getAnimals(): Promise<Animal[]> {
 	}
 }
 
+// get all animals by species
+export async function getAllAnimalsBySpecies(
+	species: string
+): Promise<Animal[] | null> {
+	try {
+		const response = await fetch(`${BASE_URL}/animals/bySpecies/${species}`);
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch animals by species lol");
+		}
+		return await response.json();
+	} catch (error) {
+		console.error("error fetching animals:", error);
+		return [];
+	}
+}
+
 // Get a single animal by ID
 export async function getAnimal(id: string): Promise<Animal | null> {
 	try {
