@@ -26,16 +26,16 @@ function App() {
 		createAnimal(animalObject);
 	}
 
-	useEffect(() => {
-		async function getAllAnimalsBySpecieslol() {
-			let data = await getAllAnimalsBySpecies("cat");
-			if (data) {
-				setAnimals(data);
-			}
-		}
+	// useEffect(() => {
+	// 	async function getAllAnimalsBySpecieslol() {
+	// 		let data = await getAllAnimalsBySpecies("cat");
+	// 		if (data) {
+	// 			setAnimals(data);
+	// 		}
+	// 	}
 
-		getAllAnimalsBySpecieslol();
-	});
+	// 	getAllAnimalsBySpecieslol();
+	// }, []);
 
 	function updateExistingAnimal() {
 		let animalObject = {
@@ -48,7 +48,7 @@ function App() {
 	}
 
 	function deleteExistingAnimal() {
-		deleteAnimal("67dd379a1053810bbd097d93");
+		deleteAnimal("67e16686a7690c0b1309970f");
 	}
 
 	useEffect(() => {
@@ -64,7 +64,7 @@ function App() {
 
 	useEffect(() => {
 		async function loadOneAnimal() {
-			let data = await getAnimal("67dc9f12100ece89cc37e84d");
+			let data = await getAnimal("67e166d1a7690c0b13099710");
 			if (data) {
 				setOneAnimal(data);
 			}
@@ -77,10 +77,14 @@ function App() {
 		<>
 			<div className="app-container">
 				<h1>Animals Database</h1>
+
 				<button onClick={createNewAnimal}>Create Animal</button>
+				{/* need an id for the animal */}
+				<button onClick={deleteExistingAnimal}>Delete Animal</button>
 
 				<div className="animals-list">
 					<h1>THE FARM</h1>
+
 					{animals && animals.length > 0 ? (
 						animals.map((animal) => (
 							<div key={animal._id} className="animal-card">
@@ -95,14 +99,15 @@ function App() {
 					)}
 
 					{/* {OneAnimal ? (
-						<div key={OneAnimal._id} className="animal-card">
-							<h3>{OneAnimal.name}</h3>
-							<p>Species: {OneAnimal.species}</p>
-							<p>Mood: {OneAnimal.mood}</p>
-						</div>
-					) : (
-						<p>No animals found. Create one!</p>
-					)} */}
+							<div key={OneAnimal._id} className="animal-card">
+								<h3>{OneAnimal.name}</h3>
+								<p>{OneAnimal._id}</p>
+								<p>Species: {OneAnimal.species}</p>
+								<p>Mood: {OneAnimal.mood}</p>
+							</div>
+						) : (
+							<p>No animals found. Create one!</p>
+						)} */}
 				</div>
 			</div>
 		</>
