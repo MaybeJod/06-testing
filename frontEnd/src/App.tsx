@@ -8,14 +8,10 @@ import {
 	getAllAnimalsBySpecies,
 	getUniqueSpecies,
 	type Animal,
+	type SpeciesCount,
 } from "./api";
 
 import "./App.css";
-
-interface SpeciesCount {
-	_id: string;
-	count: number;
-}
 
 function App() {
 	const [animals, setAnimals] = useState<Animal[]>([]);
@@ -27,17 +23,49 @@ function App() {
 	const [newAnimalSpecies, setNewAnimalSpecies] = useState<string>("");
 	const [newAnimalMood, setNewAnimalMood] = useState<string>("");
 
+	const [editingAnimal, setEditingAnimal] = useState<Animal | null>(null);
+	const [editName, setEditName] = useState("");
+	const [editSpecies, setEditSpecies] = useState("");
+	const [editMood, setEditMood] = useState("");
+	const [editingAnimalId, setEditingAnimalId] = useState<string | null>(null);
+
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 
-	function createNewAnimal() {
-		let animalObject = {
-			species: "hamster",
-			name: "Neo",
-			mood: "simulation",
+	const handleStartEditing = (animals: Animal) => {
+		setEditingAnimal(animals);
+	};
+
+	useEffect(() => {
+		if (editingAnimal) {
+			setEditName(editingAnimal.name);
+			setEditSpecies(editingAnimal.species);
+			setEditMood(editingAnimal.mood);
+		}
+	}, [editingAnimal]);
+
+	const handleSubmitEdit = async (e: React.FormEvent, animalId: string) => {
+		e.preventDefault();
+
+		const updatedAnimal = {
+			name: editName,
+			species: editSpecies,
+			mood: editMood,
 		};
 
-		createAnimal(animalObject);
-	}
+		const result = await updateAnimal(animalId, updatedAnimal);
+
+		if (result) {
+			// Update the animals list
+			setAnimals(
+				animals.map((animal) =>
+					animal._id === animalId ? { ...animal, ...updatedAnimal } : animal
+				)
+			);
+
+			// Reset editing state
+			setEditingAnimalId(null);
+		}
+	};
 
 	async function handleCreateNewAnimal() {
 		let newAnimalObject = {
@@ -188,7 +216,46 @@ function App() {
 								<p>Id: {animal._id}</p>
 								<p>Species: {animal.species}</p>
 								<p>Mood: {animal.mood}</p>
-								<button>Edit Animal</button>
+
+								<button onClick={() => setEditingAnimalId(animal._id || null)}>
+									Edit Animal
+								</button>
+
+								{editingAnimalId === animal._id && (
+									<form
+										onSubmit={(e) => {
+											e.preventDefault();
+											// Implement edit logic here
+										}}>
+										<input
+											type="text"
+											defaultValue={animal.name}
+											placeholder="Name"
+											required
+										/>
+										<input
+											type="text"
+											defaultValue={animal.species}
+											placeholder="Species"
+											required
+										/>
+										<input
+											type="text"
+											defaultValue={animal.mood}
+											placeholder="Mood"
+											required
+										/>
+										<div>
+											<button type="submit">Save Changes</button>
+											<button
+												type="button"
+												onClick={() => setEditingAnimalId(null)}>
+												Cancel
+											</button>
+										</div>
+									</form>
+								)}
+
 								<button
 									onClick={() => handleDeleteAnimal(animal._id || "")}
 									disabled={deletingId === animal._id}>

@@ -6,7 +6,7 @@ export interface Animal {
 	mood: string;
 }
 
-interface SpeciesCount {
+export interface SpeciesCount {
 	_id: string;
 	count: number;
 }
