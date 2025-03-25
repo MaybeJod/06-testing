@@ -45,7 +45,17 @@ animalsRoutes.route("/animals/bySpecies/:species").get(async (req, res) => {
 animalsRoutes.route("/animals/uniqueSpecies").get(async (req, res) => {
 	try {
 		const db = database.getDb();
-		let data = await db.collection("animals").distinct("species");
+		let data = await db
+			.collection("animals")
+			.aggregate([
+				{
+					$group: {
+						_id: "$species",
+						count: { $sum: 1 },
+					},
+				},
+			])
+			.toArray();
 
 		if (data && data.length > 0) {
 			res.json(data);

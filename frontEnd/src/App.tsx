@@ -12,11 +12,20 @@ import {
 
 import "./App.css";
 
+interface SpeciesCount {
+	_id: string;
+	count: number;
+}
+
 function App() {
 	const [animals, setAnimals] = useState<Animal[]>([]);
-	const [uniqueAnimals, setUniqueAnimals] = useState<string[]>([]);
+	const [uniqueAnimals, setUniqueAnimals] = useState<SpeciesCount[]>([]);
 
 	// const [OneAnimal, setOneAnimal] = useState<Animal | undefined>(undefined);
+
+	const [newAnimalName, setNewAnimalName] = useState<string>("");
+	const [newAnimalSpecies, setNewAnimalSpecies] = useState<string>("");
+	const [newAnimalMood, setNewAnimalMood] = useState<string>("");
 
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -28,6 +37,25 @@ function App() {
 		};
 
 		createAnimal(animalObject);
+	}
+
+	async function handleCreateNewAnimal() {
+		let newAnimalObject = {
+			species: newAnimalSpecies,
+			name: newAnimalName,
+			mood: newAnimalMood,
+		};
+
+		const createdAnimal = await createAnimal(newAnimalObject);
+
+		if (createdAnimal) {
+			setAnimals([...animals, createdAnimal]);
+		}
+
+		//reset form input
+		setNewAnimalSpecies("");
+		setNewAnimalName("");
+		setNewAnimalMood("");
 	}
 
 	// useEffect(() => {
@@ -110,7 +138,30 @@ function App() {
 			<div className="app-container">
 				<h1>Animals Database</h1>
 
-				<button onClick={createNewAnimal}>Create Animal</button>
+				<form onSubmit={handleCreateNewAnimal}>
+					<input
+						type="text"
+						placeholder="Species"
+						value={newAnimalSpecies}
+						onChange={(e) => setNewAnimalSpecies(e.target.value)}
+						required
+					/>
+					<input
+						type="text"
+						placeholder="Animal Name"
+						value={newAnimalName}
+						onChange={(e) => setNewAnimalName(e.target.value)}
+						required
+					/>
+					<input
+						type="text"
+						placeholder="Mood"
+						value={newAnimalMood}
+						onChange={(e) => setNewAnimalMood(e.target.value)}
+						required
+					/>
+					<button type="submit">Create Animal</button>
+				</form>
 
 				<div className="animals-list">
 					<h1>THE FARM</h1>
@@ -119,8 +170,8 @@ function App() {
 					{uniqueAnimals.length > 0 ? (
 						<ul className="species-list">
 							{uniqueAnimals.map((species) => (
-								<li key={species} className="species-item">
-									{species}
+								<li key={species._id} className="species-item">
+									{species._id}: {species.count}
 								</li>
 							))}
 						</ul>

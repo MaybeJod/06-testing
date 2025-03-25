@@ -6,6 +6,11 @@ export interface Animal {
 	mood: string;
 }
 
+interface SpeciesCount {
+	_id: string;
+	count: number;
+}
+
 // Base URL
 const BASE_URL = "http://localhost:3000";
 
@@ -43,7 +48,7 @@ export async function getAllAnimalsBySpecies(
 }
 
 // Get unique species
-export async function getUniqueSpecies(): Promise<string[]> {
+export async function getUniqueSpecies(): Promise<SpeciesCount[]> {
 	try {
 		const response = await fetch(`${BASE_URL}/animals/uniqueSpecies`);
 
