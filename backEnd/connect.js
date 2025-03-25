@@ -7,7 +7,7 @@ const _URI = process.env.ATLAS_URI;
 const client = new MongoClient(_URI, {
 	serverApi: {
 		version: ServerApiVersion.v1,
-		strict: true,
+		strict: false,
 		deprecationErrors: true,
 	},
 });

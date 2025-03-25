@@ -42,6 +42,24 @@ export async function getAllAnimalsBySpecies(
 	}
 }
 
+// Get unique species
+export async function getUniqueSpecies(): Promise<string[]> {
+	try {
+		const response = await fetch(`${BASE_URL}/animals/uniqueSpecies`);
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch unique species");
+		}
+
+		const data = await response.json();
+
+		return data;
+	} catch (error) {
+		console.error("Error fetching unique species:", error);
+		return [];
+	}
+}
+
 // Get a single animal by ID
 export async function getAnimal(id: string): Promise<Animal | null> {
 	try {

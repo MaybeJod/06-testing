@@ -6,15 +6,19 @@ import {
 	updateAnimal,
 	deleteAnimal,
 	getAllAnimalsBySpecies,
+	getUniqueSpecies,
 	type Animal,
 } from "./api";
 
 import "./App.css";
 
 function App() {
-	const [animals, setAnimals] = useState<Animal[] | undefined>(undefined);
+	const [animals, setAnimals] = useState<Animal[]>([]);
+	const [uniqueAnimals, setUniqueAnimals] = useState<string[]>([]);
 
-	const [OneAnimal, setOneAnimal] = useState<Animal | undefined>(undefined);
+	// const [OneAnimal, setOneAnimal] = useState<Animal | undefined>(undefined);
+
+	const [deletingId, setDeletingId] = useState<string | null>(null);
 
 	function createNewAnimal() {
 		let animalObject = {
@@ -37,19 +41,35 @@ function App() {
 	// 	getAllAnimalsBySpecieslol();
 	// }, []);
 
-	function updateExistingAnimal() {
-		let animalObject = {
-			species: "frog",
-			name: "Toad",
-			mood: "wanna jump",
-		};
+	// function updateExistingAnimal() {
+	// 	let animalObject = {
+	// 		species: "frog",
+	// 		name: "Toad",
+	// 		mood: "wanna jump",
+	// 	};
 
-		updateAnimal("67dd36121053810bbd097d92", animalObject);
-	}
+	// 	updateAnimal("67dd36121053810bbd097d92", animalObject);
+	// }
 
-	function deleteExistingAnimal() {
-		deleteAnimal("67e16686a7690c0b1309970f");
-	}
+	// function deleteExistingAnimal() {
+	// 	deleteAnimal("67e16686a7690c0b1309970f");
+	// }
+
+	// Handle animal deletion
+	const handleDeleteAnimal = async (id: string) => {
+		// Prevent multiple deletion attempts
+		if (deletingId === id) return;
+
+		setDeletingId(id);
+		const success = await deleteAnimal(id);
+
+		if (success) {
+			// Remove the deleted animal from the list
+			setAnimals(animals.filter((animal) => animal._id !== id));
+		}
+
+		setDeletingId(null);
+	};
 
 	useEffect(() => {
 		async function loadAllAnimals() {
@@ -63,15 +83,27 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		async function loadOneAnimal() {
-			let data = await getAnimal("67e166d1a7690c0b13099710");
+		async function fetchUniqSpecies() {
+			let data = await getUniqueSpecies();
+
 			if (data) {
-				setOneAnimal(data);
+				setUniqueAnimals(data);
 			}
 		}
 
-		loadOneAnimal();
+		fetchUniqSpecies();
 	}, []);
+
+	// useEffect(() => {
+	// 	async function loadOneAnimal() {
+	// 		let data = await getAnimal("67e166d1a7690c0b13099710");
+	// 		if (data) {
+	// 			setOneAnimal(data);
+	// 		}
+	// 	}
+
+	// 	loadOneAnimal();
+	// }, []);
 
 	return (
 		<>
@@ -79,19 +111,38 @@ function App() {
 				<h1>Animals Database</h1>
 
 				<button onClick={createNewAnimal}>Create Animal</button>
-				{/* need an id for the animal */}
-				<button onClick={deleteExistingAnimal}>Delete Animal</button>
 
 				<div className="animals-list">
 					<h1>THE FARM</h1>
 
+					<h2>Unique animals on the farm</h2>
+					{uniqueAnimals.length > 0 ? (
+						<ul className="species-list">
+							{uniqueAnimals.map((species) => (
+								<li key={species} className="species-item">
+									{species}
+								</li>
+							))}
+						</ul>
+					) : (
+						<p>No species found</p>
+					)}
+
+					<h2>All animals </h2>
+
 					{animals && animals.length > 0 ? (
 						animals.map((animal) => (
 							<div key={animal._id} className="animal-card">
-								<h3>{animal.name}</h3>
-								<p>{animal._id}</p>
+								<h3>Name: {animal.name}</h3>
+								<p>Id: {animal._id}</p>
 								<p>Species: {animal.species}</p>
 								<p>Mood: {animal.mood}</p>
+								<button>Edit Animal</button>
+								<button
+									onClick={() => handleDeleteAnimal(animal._id || "")}
+									disabled={deletingId === animal._id}>
+									{deletingId === animal._id ? "Deleting..." : "Delete Animal"}
+								</button>
 							</div>
 						))
 					) : (

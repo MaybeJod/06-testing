@@ -1,12 +1,10 @@
 const express = require("express");
 const database = require("./connect");
-// Fix: Import ObjectId correctly
 const { ObjectId } = require("mongodb");
 
 let animalsRoutes = express.Router();
 
 //#1 - read all
-//http://localhost:3000
 animalsRoutes.route("/animals").get(async (req, res) => {
 	let db = database.getDb();
 	try {
@@ -41,6 +39,27 @@ animalsRoutes.route("/animals/bySpecies/:species").get(async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({ message: error.message });
+	}
+});
+
+animalsRoutes.route("/animals/uniqueSpecies").get(async (req, res) => {
+	try {
+		const db = database.getDb();
+		let data = await db.collection("animals").distinct("species");
+
+		if (data && data.length > 0) {
+			res.json(data);
+		} else {
+			res.status(404).json({
+				message: "no species found",
+			});
+		}
+	} catch (error) {
+		console.error("Detailed error:", error);
+		res.status(500).json({
+			message: "Internal Server Error",
+			error: error.toString(),
+		});
 	}
 });
 

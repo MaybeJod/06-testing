@@ -22,3 +22,17 @@
 	background-color: #4b4b4b;
 	padding: 0rem;
 }
+
+.species-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+.species-item {
+	background-color: #4b4b4b;
+	color: white;
+	margin-bottom: 10px;
+	padding: 10px;
+	border-radius: 5px;
+	text-transform: capitalize;
+}
