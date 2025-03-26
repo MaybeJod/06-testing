@@ -54,6 +54,7 @@ animalsRoutes.route("/animals/uniqueSpecies").get(async (req, res) => {
 						count: { $sum: 1 },
 					},
 				},
+				{ $sort: { _id: 1 } },
 			])
 			.toArray();
 
